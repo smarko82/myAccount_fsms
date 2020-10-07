@@ -1,12 +1,13 @@
 import { assign, Machine, spawn } from "xstate";
+import { insertPinFSM } from "../insert-pin/insertPinFSM";
+import { pinResetFSM } from "../pin-reset/pinResetFSM";
+import { postCartMachine } from "./postCartFSM";
+import { upgradeFSMConf, upgradeFSMFunctions } from "./upgradeFSMConf";
 import {
   IUpgradeFSMContext,
   IUpgradeFSMStateSchema,
   UpgradeFSMEvent
 } from "./upgradeFSMInterfaces";
-import { upgradeFSMConf, upgradeFSMFunctions } from "./upgradeFSMConf";
-import { insertPinFSM } from "../insert-pin/insertPinFSM";
-import { pinResetFSM } from "../pin-reset/pinResetFSM";
 
 ////////////////////////////////
 // MACRO STATES
@@ -178,22 +179,25 @@ export const upgradeFSM = Machine<
       goToWaitingPin: undefined,
       backFromTAndC: undefined,
       goBackTo: undefined,
-      insertPinFSM: undefined
+      insertPinFSM: undefined,
+
+      postCartSuccess: undefined
     },
     states: {
       initialState: {
-        on: {
-          "": [
-            {
-              target: "getPromoByPackageOfInterest",
-              cond: (context) => context.packageOfInterest !== ""
-            },
-            {
-              target: "getPromosByCategoryOfInterest",
-              cond: (context) => context.categoryOfInterest !== ""
-            }
-          ]
-        }
+        entry: assign({
+          postCart: () => spawn(postCartMachine)
+        }),
+        always: [
+          {
+            target: "getPromoByPackageOfInterest",
+            cond: (context) => context.packageOfInterest !== ""
+          },
+          {
+            target: "getPromosByCategoryOfInterest",
+            cond: (context) => context.categoryOfInterest !== ""
+          }
+        ]
       },
 
       getPromoByPackageOfInterest: {

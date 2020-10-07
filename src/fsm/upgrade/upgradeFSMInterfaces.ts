@@ -53,6 +53,8 @@ export interface IUpgradeFSMContext {
   promoOnCart: any;
   backFromTAndC: any;
   goBackTo: any;
+  postCartSuccess: boolean;
+
   // revived from root
   e2eContractId: string;
   // for insertPin
@@ -78,7 +80,8 @@ export type UpgradeFSMEvent =
   // Recived from insertPinFSM
   | { type: "DISMISS" }
   | { type: "INSERTED_CORRECT_PIN" }
-  | { type: "GO_TO_RESET_PIN" };
+  | { type: "GO_TO_RESET_PIN" }
+  | { type: "POST_CART_SUCCESS" };
 
 // All the events that the machine handles
 export type UpgradeFSMEvents = {

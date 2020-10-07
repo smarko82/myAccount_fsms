@@ -48,6 +48,12 @@ const promo = {
 };
 
 export const upgradeFSMFunctions = {
+  postCart: (context, event) => {
+    console.log("HERE");
+    return new Promise((resolve, reject) => {
+      resolve();
+    });
+  },
   getPromoByPackageOfInterest: (context, event) =>
     new Promise((resolve, reject) => {
       resolve({ promo: consts.promoGrid1 });
